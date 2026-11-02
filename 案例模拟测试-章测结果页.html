@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>案例模拟测试-章测结果页 · 信息系统项目管理师</title>
+<style>
+/* ============================================================
+   DESIGN SYSTEM — 与「学习报告页 / 入学测结果页 / 课程大纲」保持一致
+   无左栏菜单，居中容器
+   ============================================================ */
+:root{
+  --blue:#4A7BFF; --blue-2:#6B95FF; --blue-deep:#2E5BD9;
+  --blue-light:#E8F0FE; --blue-ghost:#F0F4FF;
+  --bg:#F4F6FA; --card:#FFFFFF;
+  --line:#ECEFF4; --line-2:#F3F5F9;
+  --t1:#1F2937; --t2:#5C6573; --t3:#94A3B8; --t4:#CBD2DC;
+  --purple:#8B5CF6; --amber:#F59E0B; --cyan:#06B6D4;
+  --green:#10B981; --red:#EF4444;
+  --mono:'JetBrains Mono','SF Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --r-xs:8px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;
+  --sh:0 1px 3px rgba(31,41,55,.04),0 6px 18px -8px rgba(31,41,55,.07);
+  --sh-h:0 8px 28px -10px rgba(74,123,255,.18),0 4px 14px -6px rgba(31,41,55,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--sans);color:var(--t1);background:var(--bg);line-height:1.55;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(640px 440px at 8% -8%,rgba(74,123,255,.10),transparent 60%),
+    radial-gradient(580px 440px at 96% 4%,rgba(139,92,246,.09),transparent 60%),
+    radial-gradient(720px 520px at 70% 104%,rgba(6,182,212,.07),transparent 60%)}
+body::after{content:'';position:fixed;inset:0;z-index:-1;opacity:.5;
+  background-image:linear-gradient(rgba(31,41,55,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(31,41,55,.025) 1px,transparent 1px);
+  background-size:34px 34px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 28%,#000 30%,transparent 80%)}
+
+.wrap{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+
+/* ===== 顶部标题 + 返回 ===== */
+.top-bar{position:relative;display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:22px;min-height:46px}
+.hd-l{display:flex;align-items:center;gap:11px}
+.hd-ic{width:32px;height:32px;border-radius:10px;background:var(--blue-light);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hd-ic svg{width:18px;height:18px;display:block}
+.hd-t{font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-.01em}
+.back-link{position:absolute;right:0;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;font-size:.84rem;font-weight:600;color:var(--t3);text-decoration:none;transition:.18s}
+.back-link:hover{color:var(--blue)}
+.back-link svg{width:15px;height:15px}
+
+.page{padding:6px 0 0}
+
+/* ===== 顶部三卡 ===== */
+.result-grid{display:grid;grid-template-columns:240px 1fr 400px;gap:18px;margin-bottom:22px;align-items:stretch}
+.rcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh);padding:22px;display:flex;flex-direction:column;transition:.2s}
+.rcard:hover{box-shadow:var(--sh-h);transform:translateY(-2px)}
+.rcard-h{display:flex;align-items:center;gap:7px;font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:14px}
+.rcard-h .qicon{width:16px;height:16px;color:var(--t3);cursor:help}
+/* 问号 hover 提示 */
+.qtip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:-4px;border-radius:50%;background:var(--t4);color:#fff;font-size:.62rem;font-weight:800;line-height:1;cursor:help;flex-shrink:0;transition:.18s}
+.qtip:hover{background:var(--blue)}
+.qtip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:max-content;max-width:230px;padding:7px 10px;border-radius:var(--r-xs);background:var(--t1);color:#fff;font-size:.72rem;font-weight:500;line-height:1.5;text-align:left;white-space:normal;box-shadow:0 6px 16px -6px rgba(0,0,0,.35);opacity:0;visibility:hidden;transition:.18s;z-index:9999}
+.qtip:hover .qtip-box{opacity:1;visibility:visible}
+.qtip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--t1)}
+.rcard-h-l{display:flex;align-items:center;gap:10px}
+.rcard-ic{width:30px;height:30px;border-radius:9px;background:#E8F0FE;color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rcard-ic svg{width:17px;height:17px}
+.rcard-h-txt{display:flex;flex-direction:column;gap:1px;line-height:1.2}
+.rcard-title{font-size:1.05rem;font-weight:800;color:var(--t1)}
+.rcard-sub{font-size:.72rem;color:var(--t3);font-weight:500}
+
+/* 本次分数 */
+.score-val{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.score-num{font-family:var(--mono);font-size:4.2rem;font-weight:800;color:var(--red);line-height:1;letter-spacing:-2px}
+.score-trend{width:28px;height:28px;border-radius:8px;background:var(--bg);color:var(--t3);display:flex;align-items:center;justify-content:center;margin-top:8px}
+.score-trend svg{width:15px;height:15px}
+.score-full{font-size:.82rem;color:var(--t2);margin-bottom:12px}
+/* 得分分析：本章 / 非本章 得分拆分 */
+.score-split{flex:1;display:flex;flex-direction:column;justify-content:center;gap:13px}
+.ss-hero{display:flex;align-items:stretch;padding:15px 8px;background:#F5F7FB;border-radius:var(--r-md)}
+.ss-stat{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;min-width:0}
+.ss-div{width:1px;background:#E2E8F2;margin:6px 0;flex-shrink:0}
+.ss-ic{width:32px;height:32px;border-radius:10px;background:var(--blue-light);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ss-ic svg{width:16px;height:16px}
+.ss-label{display:block;font-size:.74rem;color:var(--t2);margin-bottom:2px}
+.ss-val{font-size:1.5rem;font-weight:800;color:var(--blue);line-height:1.15;letter-spacing:-.5px}
+.ss-val i{font-style:normal;font-size:.8rem;font-weight:600;color:var(--t2);margin-left:2px;letter-spacing:0}
+.ss-minor{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--t2);padding:0 2px}
+.ss-minor>svg{width:15px;height:15px;color:var(--t3);flex-shrink:0}
+.ss-minor b{font-weight:800;color:var(--t1);font-size:1.05em}
+.ss-minor .ss-md{color:#D5DBE5}
+.score-time{font-size:.82rem;color:var(--t2);display:flex;align-items:center;gap:6px}
+.score-time svg{width:14px;height:14px;color:var(--t3)}
+
+/* 失分知识点云 */
+.kp-body{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:120px;background:#F8FAFF;border:1px solid #DBE7FF;border-radius:var(--r-md);padding:14px}
+.kp-cloud{position:static;width:100%;height:auto;display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:8px 12px}
+.kp-tag{position:static;display:inline-block;font-weight:700;white-space:nowrap;line-height:1.35;cursor:default;transition:.2s}
+.kp-tag:hover{transform:scale(1.05);z-index:1}
+.kp-t1{left:6%;top:10%;font-size:1.05rem;color:var(--blue)}
+.kp-t2{left:32%;top:2%;font-size:1.32rem;color:var(--blue)}
+.kp-t3{left:68%;top:12%;font-size:.95rem;color:#6B95FF}
+.kp-t4{left:8%;top:46%;font-size:.9rem;color:var(--purple)}
+.kp-t5{left:46%;top:38%;font-size:1.08rem;color:var(--blue)}
+.kp-t6{left:10%;top:78%;font-size:.82rem;color:var(--t2)}
+.kp-t7{left:60%;top:74%;font-size:.82rem;color:var(--t3)}
+
+/* 学习导航 */
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;align-content:start}
+.nav-item{position:relative;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--r-sm);background:#F8FAFC;border:1px solid var(--line-2);text-decoration:none;transition:.18s}
+.nav-item:hover{background:#F0F4FF;border-color:#DEE5F7;transform:translateY(-1px)}
+.nav-ic{width:28px;height:28px;border-radius:8px;background:#E8F0FE;color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-ic svg{width:16px;height:16px}
+.nav-txt{flex:1;font-size:.84rem;font-weight:600;color:var(--t1)}
+.nav-arrow{width:16px;height:16px;color:var(--t3);flex-shrink:0}
+.nav-arrow svg{width:16px;height:16px}
+
+/* ===== 章节标题 ===== */
+.sec-head{margin-bottom:16px}
+.sec-title{display:flex;align-items:center;gap:9px;font-size:1.2rem;font-weight:800;color:var(--t1);margin-bottom:7px}
+.sec-title::before{content:'';width:4px;height:20px;border-radius:2px;background:var(--blue)}
+.sec-sub{font-size:.84rem;color:var(--t3);padding-left:13px}
+/* 章节标题后的筛选项 */
+.sec-filter{display:inline-flex;align-items:center;gap:6px;margin-left:2px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:#fff;font-size:.78rem;font-weight:600;line-height:1;color:var(--t2);cursor:pointer;user-select:none;transition:.18s}
+.sec-filter:hover{border-color:var(--blue-2);color:var(--blue)}
+.sec-filter input{position:absolute;width:0;height:0;opacity:0}
+.sec-filter-ic{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--t4);background:#fff;color:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.18s}
+.sec-filter-ic svg{width:10px;height:10px;stroke-width:3.2}
+.sec-filter.on{border-color:var(--blue);background:var(--blue-ghost);color:var(--blue)}
+.sec-filter.on .sec-filter-ic{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ===== 错题解析两栏 ===== */
+.analysis-grid{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
+.p-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line-2)}
+.p-title{font-size:1.05rem;font-weight:700;color:var(--t1)}
+.p-body{padding:16px 20px}
+
+/* 左侧错题列表 */
+.wq-list{display:flex;flex-direction:column;gap:10px}
+.wq-group{font-size:.84rem;font-weight:700;color:var(--blue);padding:6px 0;display:flex;align-items:center;gap:6px}
+.wq-group::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--blue)}
+.wq-item{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);cursor:pointer;transition:.18s;background:#fff}
+.wq-item:hover{border-color:var(--blue);background:var(--blue-ghost)}
+.wq-item.on{border-color:var(--blue);background:linear-gradient(135deg,var(--blue-ghost),#fff);box-shadow:0 3px 10px -4px rgba(74,123,255,.25)}
+.wq-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wq-name{font-size:.9rem;font-weight:600;color:var(--t1)}
+.wq-point{font-size:.875rem;color:var(--t3);font-weight:500;line-height:1.4}
+.wq-score{font-size:.82rem;font-weight:700;color:var(--red);flex-shrink:0}
+.wq-full{color:var(--t3);font-weight:500}
+
+/* 右侧详情 */
+.p-title{display:flex;align-items:center;gap:8px}
+.p-title-ic{width:18px;height:18px;color:var(--blue);flex-shrink:0}
+
+.detail-sec{margin-bottom:22px}
+.detail-sec:last-child{margin-bottom:0}
+.detail-sec-head{display:flex;align-items:center;gap:7px;font-size:1rem;font-weight:800;color:var(--t1);margin-bottom:14px}
+.detail-sec-head::before{content:'';width:4px;height:17px;border-radius:2px;background:var(--blue)}
+
+/* 大题背景卡片 */
+.case-bg{border-radius:var(--r-md);border:1px solid #DBE7FF;background:#F8FAFF;padding:14px 16px}
+.case-head{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.case-head-ic{width:18px;height:18px;color:var(--blue);flex-shrink:0}
+.case-head-txt{font-size:.9rem;font-weight:700;color:var(--blue-deep)}
+.case-intro{font-size:.84rem;color:var(--t2);line-height:1.7;margin-bottom:14px}
+.case-section{background:#fff;border:1px solid #E6EEFF;border-radius:var(--r-sm);padding:12px 14px}
+.case-section-head{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:var(--blue);margin-bottom:10px}
+.case-section-head svg{width:15px;height:15px;color:var(--blue)}
+.case-section-body{font-size:.85rem;color:var(--t2);line-height:1.85;max-height:260px;overflow-y:auto}
+.case-section-body p{margin-bottom:8px}
+.case-section-body p:last-child{margin-bottom:0}
+
+/* 小题错题解析 */
+.q-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.q-badge{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:20px;background:var(--blue);color:#fff;font-size:.78rem;font-weight:700}
+.q-head-txt{flex:1;font-size:.92rem;color:var(--t1);line-height:1.65;padding-top:2px}
+
+.block{margin-bottom:14px;background:#F8FAFF;border:1px solid var(--line);border-radius:var(--r-md);padding:13px 15px}
+.block-result{background:#F0FBF5}
+.block:last-child{margin-bottom:0}
+.block-label{font-size:.85rem;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:6px;color:var(--t2)}
+.block-label svg{width:15px;height:15px;flex-shrink:0}
+.block-label.result{color:var(--green)}
+.block-label.result svg{color:var(--green)}
+.block-label.ref{color:var(--blue)}
+.block-body{font-size:.85rem;color:var(--t2);line-height:1.75;padding-left:21px}
+.block-body .got{color:var(--red);font-weight:800}
+
+.ans-box{font-size:.9rem;color:var(--t1);padding-left:21px}
+.score-line{font-size:.88rem;color:var(--t1);font-weight:600;margin-bottom:6px}
+.reason{font-size:.84rem;color:var(--t2);line-height:1.7}
+.rule-txt{font-size:.84rem;color:var(--t2);line-height:1.8}
+.knowledge{font-size:.85rem;color:var(--t2)}
+
+/* 参考答案阶段列表 */
+.ref-stages{display:flex;flex-direction:column;gap:10px;padding-left:21px}
+.ref-stage{display:flex;align-items:flex-start;gap:10px}
+.ref-stage-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ref-stage-body{flex:1;font-size:.85rem;color:var(--t2);line-height:1.7}
+.ref-stage-name{color:var(--green);font-weight:700;margin-right:4px}
+.ref-stage-txt{color:var(--t2)}
+
+@media (max-width:980px){
+  .result-grid{grid-template-columns:1fr}
+  .analysis-grid{grid-template-columns:1fr}
+  .back-link{position:static;transform:none;justify-self:end}
+  .top-bar{justify-content:space-between}
+  .hd-t{font-size:1.1rem}
+}
+</style>
+<link rel="stylesheet" href="assets/case-results.css?v=46">
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <div class="hd-l">
+      
+      <h1 class="hd-t">答题报告-第1章-信息化发展</h1>
+    </div>
+    <a href="学习报告页-科目一科目二整合版.html#subject-two-test" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>返回 案例-章测试 列表</a>
+  </div>
+
+  <div class="page chapter-result">
+    <!-- 顶部三卡 -->
+    <div class="result-grid">
+      <!-- 本次分数 -->
+      <div class="rcard score-decorated"><img class="score-decoration" src="assets/generated/case-score-decoration.png" alt="" aria-hidden="true">
+        <div class="rcard-h"><div class="rcard-h-l"><span class="rcard-ic"><img src="assets/generated/course-module-04-target-glass.png" alt=""></span><span class="rcard-title">本次得分率</span><span class="qtip">?<span class="qtip-box">章测试的得分与总分，只计算当前章的题目分数</span></span></div></div>
+        <div class="score-val">
+          <span class="score-num">62%</span>
+          
+        </div>
+        <div class="chapter-score-progress"><div class="chapter-score-progress-label"><span>得分 <strong>29</strong> 分</span><span>满分 46 分</span></div><div class="chapter-score-track" role="progressbar" aria-label="本章得分" aria-valuemin="0" aria-valuemax="46" aria-valuenow="29"><span style="width:63.043478%"></span></div></div>
+        <div class="score-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>用时 25:10</div>
+      </div>
+
+      <!-- 得分分析 -->
+      <div class="rcard">
+        <div class="rcard-h"><div class="rcard-h-l"><span class="rcard-ic"><img src="assets/generated/summary-conclusion-glass.png" alt=""></span><span class="rcard-title">得分分析</span></div></div>
+        <div class="score-split">
+          <div class="ss-hero">
+            <div class="ss-stat">
+              <span class="ss-ic ss-icon-questions" aria-hidden="true"></span>
+              <div class="ss-stat-txt"><span class="ss-label">本章案例题目数</span><div class="ss-val">5<i>个</i></div></div>
+            </div>
+            <span class="ss-div"></span>
+            <div class="ss-stat">
+              <span class="ss-ic ss-icon-total" aria-hidden="true"></span>
+              <div class="ss-stat-txt"><span class="ss-label">本章案例题分值共</span><div class="ss-val">46<i>分</i></div></div>
+            </div>
+            <span class="ss-div"></span>
+            <div class="ss-stat">
+              <span class="ss-ic ss-icon-earned" aria-hidden="true"></span>
+              <div class="ss-stat-txt"><span class="ss-label">您的得分</span><div class="ss-val">29<i>分</i></div></div>
+            </div>
+          </div>
+          <div class="ss-minor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="4"/></svg>
+            <span>非本章案例题目数：<b>2</b>个</span><span class="ss-md">|</span>
+            <span>非本章案例题分值共：<b>25</b>分</span><span class="ss-md">|</span>
+            <span>您的得分：<b>12</b>分</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 学习导航 -->
+      <div class="rcard">
+        <div class="rcard-h">
+          <div class="rcard-h-l"><span class="rcard-ic"><img src="assets/generated/nav-guide-glass.png" alt=""></span>
+            <div class="rcard-h-txt"><span class="rcard-title">学习导航</span></div>
+          </div>
+        </div>
+        <div class="nav-grid">
+          <a class="nav-item" href="#question-detail"><span class="nav-ic"><img src="assets/generated/case-answer-report-glass.png" alt=""></span><span class="nav-txt">查看本次题目</span><span class="nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></span></a>
+          <a class="nav-item" href="#wrong-questions"><span class="nav-ic"><img src="入学测/assets/guide-practice.png" alt=""></span><span class="nav-txt">看本章错题</span><span class="nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></span></a>
+          <a class="nav-item" href="学习报告页-科目一科目二整合版.html#video-courses"><span class="nav-ic"><img src="入学测/assets/guide-study.png" alt=""></span><span class="nav-txt">看本章视频课</span><span class="nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></span></a>
+          <a class="nav-item" href="学习报告页-科目一科目二整合版.html#subject-two"><span class="nav-ic"><img src="入学测/assets/guide-report.png" alt=""></span><span class="nav-txt">看学习报告</span><span class="nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 知识短板分析 -->
+    <div class="sec-head">
+      <div class="sec-title">知识短板分析<label class="sec-filter" id="onlyChapterFilter"><input type="checkbox" id="onlyChapter" checked><span class="sec-filter-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>仅看本章错题</label></div>
+      <div class="sec-sub">本区域汇总展示本次得分不足题目分数60%的题；这些已自动加入全局错题本。</div>
+    </div>
+
+    <div class="analysis-grid" id="wrong-questions">
+      <!-- 左侧错题解析 -->
+      <div class="panel">
+        <div class="p-head"><div class="p-title"><img class="analysis-title-icon" src="assets/generated/case-directory-glass.png" alt="">错题目录</div></div>
+        <div class="p-body">
+          <div class="wq-list">
+            <div class="wq-group">案例1</div>
+            <div class="wq-item on" data-in-chapter="1">
+              <div class="wq-row">
+                <span class="wq-name">案例1-2</span>
+                <span class="wq-score">4分<span class="wq-full">（满分9分）</span></span>
+              </div>
+              <div class="wq-point">考点：13.1-管理基础</div>
+            </div>
+            <div class="wq-group">案例2</div>
+            <div class="wq-item" data-in-chapter="1">
+              <div class="wq-row">
+                <span class="wq-name">案例2-2</span>
+                <span class="wq-score">2分<span class="wq-full">（满分9分）</span></span>
+              </div>
+              <div class="wq-point">考点：13.2-项目资源管理</div>
+            </div>
+            <div class="wq-item" data-in-chapter="0">
+              <div class="wq-row">
+                <span class="wq-name">案例2-3</span>
+                <span class="wq-score">1分<span class="wq-full">（满分6分）</span></span>
+              </div>
+              <div class="wq-point">考点：13.3-团队建设与管理</div>
+            </div>
+            <div class="wq-group">案例3</div>
+            <div class="wq-item" data-in-chapter="0">
+              <div class="wq-row">
+                <span class="wq-name">案例3-2</span>
+                <span class="wq-score">2分<span class="wq-full">（满分9分）</span></span>
+              </div>
+              <div class="wq-point">考点：13.4-冲突管理</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧本次错题解析 -->
+      <div class="panel">
+        <div class="p-head"><div class="p-title"><img class="analysis-title-icon" src="assets/generated/case-answer-report-glass.png" alt="">案例1-2  错题解析</div></div>
+        <div class="p-body">
+
+          <div class="detail-sec" id="question-detail">
+            <div class="case-bg">
+              <div class="case-head">
+                <svg class="case-head-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                <span class="case-head-txt">案例1-材料型问答题</span>
+              </div>
+             
+              <div class="case-section">
+                
+                <div class="case-section-body">
+                  <p> 阅读下列说明，回答问题1至问题4，将解答填入答题区的对应栏内。</p>
+                  <p> 【说明】</p>
+                  <p>某信息系统集成公司承接了一个电子政务信息系统项目，客户要求6个月内上线投入使用。考虑到项目的重要性，公司任命资深的研发工程师小李为项目经理。小李随后从公司各个研发部门抽调技术精英，组建了一个跨部门的项目团队。根据合同要求，小李向公司采购部门提交了物料申请单。项目初期，团队成员都对项目的成功充满了期待，但在技术路线的选择上，团队成员小张和团队的资深设计师小王产生了分歧。两人多次沟通后仍然无法达成共识。小张觉得自己的技术路线更为先进，而小王则认为自己的方案更加贴近市场需求。小张和小王都比较孤傲，谁也不妥协。在这种情况下，小李根据自己的研发经验，认为小张的技术路线更好，因此要求小王按小张的方案开展工作，小王虽然表面答应了，但内心并不认可。</p>
+                  <p>随着项目的推进，团队在短短两个月内就遇到了重重困难。尽管大家都在加班加点地工作，但进度仍然不如预期。团队成员开始互相指责，有的觉得考核标准不清晰，还有的抱怨人员分配不符合项目实际需求。同时，所订购的服务器也迟迟未到货，项目严重滞后，小李感到压力巨大，项目团队陷入了困境。公司高层得知情况后，决定介入并重新评估项目的状况。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-sec">
+            <div class="q-head">
+              <span class="q-badge">问题2</span>
+              <span class="q-head-txt">结合案例，简要说明项目团队建设经历各阶段的主要特点，并指出当前项目团队建设处于的哪个阶段？</span>
+            </div>
+
+            <div class="block">
+              <div class="block-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                你的答案：
+              </div>
+              <div class="block-body ans-box">111</div>
+            </div>
+
+            <div class="block block-result">
+              <div class="block-label result">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 12 15 16 10"/></svg>
+                批阅结果：
+              </div>
+              <div class="block-body">
+                <div class="score-line">该题总分7分，实得<span class="got">0分</span></div>
+                <div class="reason">未作实质性内容，五个团队建设阶段的名称及特点均未涉及，当前所处阶段也未作答。</div>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="block-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                评分规则：
+              </div>
+              <div class="block-body rule-txt">7分：每阶段1分（名称和特点各0.5分，阶段名称需要一致，特点意思相近即可），顺序不可改变，第二问2分，共7分 特点得分点：1、形成阶段：初步组建，期待美好 2、震荡阶段：冲突显现，怀疑领导 3、规范阶段：信任建立，认可领导 4、发挥阶段：高效协作，相互依赖，拥有荣誉感和解决问题的能力 5、解散阶段：任务完成，团队解散</div>
+            </div>
+
+            <div class="block">
+              <div class="block-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                本题考核章节知识：
+              </div>
+              <div class="block-body knowledge">13.1-管理基础</div>
+            </div>
+
+            <div class="block block-result" style="margin-bottom:0">
+              <div class="block-label result">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/></svg>
+                参考答案
+              </div>
+              <div class="ref-stages">
+                <div class="ref-stage">
+                  <div class="ref-stage-body">
+                    <span class="ref-stage-txt">1、形成阶段：在本阶段，团队往往对未来有美好的期待。</span>
+                  </div>
+                </div>
+                <div class="ref-stage">
+                  <div class="ref-stage-body">
+                    <span class="ref-stage-txt">2、震荡阶段：个体之间开始争执，互相指责，并且怀疑项目经理的能力。</span>
+                  </div>
+                </div>
+                <div class="ref-stage">
+                  <div class="ref-stage-body">
+                    <span class="ref-stage-txt">3、规范阶段：团队成员开始相互信任，项目经理能得到团队的认可。</span>
+                  </div>
+                </div>
+                <div class="ref-stage">
+                  <div class="ref-stage-body">
+                    <span class="ref-stage-txt">4、发挥阶段：团队成员之间相互依靠，平稳高效地解决问题。这时团队成员的集体荣誉感会非常强。</span>
+                  </div>
+                </div>
+                <div class="ref-stage">
+                  <div class="ref-stage-body">
+                    <span class="ref-stage-txt">5、解散阶段：所有工作完成后，项目结束，团队解散。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var box = document.getElementById('onlyChapter');
+  var label = document.getElementById('onlyChapterFilter');
+  if(!box) return;
+  function apply(){
+    var on = box.checked, i, it, el;
+    if(label) label.classList.toggle('on', on);
+    var items = document.querySelectorAll('.wq-item');
+    for(i=0;i<items.length;i++){
+      it = items[i];
+      it.style.display = (on && it.getAttribute('data-in-chapter') !== '1') ? 'none' : '';
+    }
+    var list = document.querySelector('.wq-list');
+    if(!list) return;
+    var kids = list.children, cur = null, has = false;
+    for(i=0;i<kids.length;i++){
+      el = kids[i];
+      if(el.classList.contains('wq-group')){
+        if(cur) cur.style.display = has ? '' : 'none';
+        cur = el; has = false;
+      } else if(el.classList.contains('wq-item')){
+        if(el.style.display !== 'none') has = true;
+      }
+    }
+    if(cur) cur.style.display = has ? '' : 'none';
+  }
+  box.addEventListener('change', apply);
+  apply();
+})();
+</script>
+<script src="assets/case-results.js?v=2"></script></body>
+</html>
